@@ -20,3 +20,6 @@ const globalCategories: GlobalCategoryInput[] = [
   { name: "Investimentos", color: "#FFBA33", type: TransactionType.income },
   { name: "Outros", color: "#B033FF", type: TransactionType.income },
 ];
+
+
+console.log("🏆")
