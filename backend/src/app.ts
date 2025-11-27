@@ -1,8 +1,14 @@
 import Fastify from 'fastify';
+import type {FastifyInstance} from 'fastify'
+import routes from "./routes";
 
-const app = Fastify();
+const app:FastifyInstance = Fastify({
+    logger: true
+})
 
-export default app;
+
+app.register(routes)
+
+export default app
 
 
-// It's just a comment
