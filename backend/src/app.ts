@@ -6,6 +6,6 @@ const app: FastifyInstance = Fastify({
   logger: true,
 });
 
-app.register(routes, {prefix: "/api"});
+app.register(routes, { prefix: '/api' });
 
 export default app;
