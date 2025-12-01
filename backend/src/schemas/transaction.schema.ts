@@ -4,9 +4,9 @@ import { TransactionType } from '@prisma/client';
 
 const isValidObjectId = (id: string): boolean => ObjectId.isValid(id);
 
-export const createTransaction = z.object({
+export const createTransactionSchema = z.object({
   description: z.string().min(1, 'Descrição obrigatória'),
-  amount: z.number().positive('Valor deve ser positivo'), 
+  amount: z.number().positive('Valor deve ser positivo'),
   date: z.coerce.date({
     errorMap: () => ({ message: 'Data inválida' }),
   }),
@@ -14,6 +14,6 @@ export const createTransaction = z.object({
     message: 'Categoria inválida',
   }),
   type: z.enum([TransactionType.expense, TransactionType.income], {
-    errorMap: () => ({ message: 'Tipo de transação inválido' }), 
+    errorMap: () => ({ message: 'Tipo de transação inválido' }),
   }),
 });
