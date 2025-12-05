@@ -1,7 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { createTransactionSchema } from '../../schemas/transaction.schema';
 import prisma from '../../config/prisma';
-import { error } from 'console';
 
 const createTransaction = async (
   request: FastifyRequest,
@@ -17,10 +16,10 @@ const createTransaction = async (
   const result = createTransactionSchema.safeParse(request.body);
 
   if (!result.success) {
-    const errorMessage =
-      result.error.errors[0].message || 'Validação inválida!';
-
-    reply.status(400).send({ error: errorMessage });
+    const errorMessageJSON = result.error.message || 'Validação inválida!';
+    console.log(errorMessageJSON);
+    const errorMessage = JSON.parse(errorMessageJSON);
+    reply.status(400).send({ error: errorMessage[0].message });
     return;
   }
 
