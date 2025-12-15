@@ -5,7 +5,7 @@ import prisma from '../../config/prisma';
 const createTransaction = async (
   request: FastifyRequest,
   reply: FastifyReply,
-) => {
+): Promise<void> => {
   const userId = 'FJDLKMsdfSDFG234jk34h2';
 
   if (!userId) {
