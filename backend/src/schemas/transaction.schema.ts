@@ -28,5 +28,4 @@ export const getTransactionsSchema = z.object({
     .optional(),
 });
 
-
 export type GetTransactionQuery = z.infer<typeof getTransactionsSchema>;
