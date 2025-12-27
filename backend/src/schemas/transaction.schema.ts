@@ -1,6 +1,6 @@
-import { z } from 'zod';
-import { ObjectId } from 'mongodb';
 import { TransactionType } from '@prisma/client';
+import { ObjectId } from 'mongodb';
+import { z } from 'zod';
 
 const isValidObjectId = (id: string): boolean => ObjectId.isValid(id);
 
@@ -26,6 +26,9 @@ export const getTransactionsSchema = z.object({
       errorMap: () => ({ message: 'Data inválida' }),
     })
     .optional(),
+    categoryId: z.string().refine(isValidObjectId, {
+    message: 'Categoria inválida',
+  }),
 });
 
 export type GetTransactionQuery = z.infer<typeof getTransactionsSchema>;

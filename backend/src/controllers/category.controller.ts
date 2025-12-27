@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { request } from 'http';
+
 import prisma from '../config/prisma';
 
 export const getCategories = async (

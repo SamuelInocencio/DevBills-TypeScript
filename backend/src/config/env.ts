@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { dot } from 'node:test/reporters';
+
 import { z } from 'zod';
 
 dotenv.config();

@@ -1,10 +1,11 @@
 import type { FastifyInstance } from 'fastify';
-import createTransaction from '../controllers/transactions/createTransactions.controller';
 import { zodToJsonSchema } from 'zod-to-json-schema';
+import createTransaction from '../controllers/transactions/createTransactions.controller';
 import {
   createTransactionSchema,
   getTransactionsSchema,
 } from '../schemas/transaction.schema';
+import { getTransactions } from '../controllers/transactions/getTransactions.controller';
 
 const transactionRoutes = async (fastify: FastifyInstance) => {
   // Criação
