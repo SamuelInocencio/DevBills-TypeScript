@@ -26,9 +26,15 @@ export const getTransactionsSchema = z.object({
       errorMap: () => ({ message: 'Data inválida' }),
     })
     .optional(),
-    categoryId: z.string().refine(isValidObjectId, {
+  categoryId: z.string().refine(isValidObjectId, {
     message: 'Categoria inválida',
   }),
 });
 
+export const getTransactionsSummarySchema = z.object({
+  month: z.string({ message: 'O mês é obrigatório' }),
+  year: z.string({ message: 'O ano é obrigatório' }),
+});
+
 export type GetTransactionQuery = z.infer<typeof getTransactionsSchema>;
+export type GetTransactionSummaryQuery = z.infer<typeof getTransactionsSummarySchema>;
