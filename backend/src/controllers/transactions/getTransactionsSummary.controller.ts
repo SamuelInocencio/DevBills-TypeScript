@@ -36,13 +36,11 @@ export const getTransactionsSummary = async (
           lte: endDate,
         },
       },
-    
+
       include: {
         category: true,
       },
     });
-
-    console.log(transactons);
 
     reply.send(transactons);
   } catch (err) {

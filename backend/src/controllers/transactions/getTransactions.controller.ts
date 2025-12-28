@@ -7,13 +7,11 @@ import { TransactionFilter } from '../../types/transaction.schema';
 
 dayjs.extend(utc);
 
-
-
 export const getTransactions = async (
   request: FastifyRequest<{ Querystring: GetTransactionQuery }>,
   reply: FastifyReply,
 ): Promise<void> => {
-  const userId = 'sadjfklasjlksadjklfsajd';
+  const userId = 'FJDLKMsdfSDFG234jk34h2';
 
   if (!userId) {
     reply.status(401).send({ error: 'Usuário não autenticado' });
