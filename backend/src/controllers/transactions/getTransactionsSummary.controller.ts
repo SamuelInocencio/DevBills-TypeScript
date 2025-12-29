@@ -1,8 +1,11 @@
+import { TransactionType } from '@prisma/client';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import prisma from '../../config/prisma';
 import type { GetTransactionSummaryQuery } from '../../schemas/transaction.schema';
+import { CategorySummary } from '../../types/category.types';
+import { TransactionSummary } from '../../types/transaction.schema';
 
 dayjs.extend(utc);
 
@@ -42,7 +45,44 @@ export const getTransactionsSummary = async (
       },
     });
 
-    reply.send(transactons);
+    let totalExpenses = 0;
+    let totalIncomes = 0;
+    const groupedExpenses = new Map<string, CategorySummary>();
+
+    for (const transaction of transactons) {
+      if (transaction.type === TransactionType.expense) {
+        const existing = groupedExpenses.get(transaction.categoryId) ?? {
+          categoryId: transaction.categoryId,
+          categoryName: transaction.category.name,
+          categoryColor: transaction.category.color,
+          amount: 0,
+          percentage: 0,
+        };
+
+        existing.amount += transaction.amount;
+        groupedExpenses.set(transaction.categoryId, existing);
+
+        totalExpenses += transaction.amount;
+      } else {
+        totalIncomes += transaction.amount;
+      }
+    }
+
+    const summary: TransactionSummary = {
+      totalExpenses,
+      totalIncomes,
+      balance: totalIncomes - totalExpenses,
+      expensesByCategory: Array.from(groupedExpenses.values())
+        .map((entry) => ({
+          ...entry,
+          percentage: Number.parseFloat(
+            ((entry.amount / totalExpenses) * 100).toFixed(2),
+          ),
+        }))
+        .sort((a, b) => b.amount - a.amount),
+    };
+
+    reply.send(summary);
   } catch (err) {
     request.log.error('Erro ao trazer transações', err);
     reply.status(500).send({ error: 'Erro do servidor' });
