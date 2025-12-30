@@ -1,6 +1,7 @@
 import { TransactionType } from '@prisma/client';
 import { ObjectId } from 'mongodb';
 import { z } from 'zod';
+import { id } from 'zod/v4/locales';
 
 const isValidObjectId = (id: string): boolean => ObjectId.isValid(id);
 
@@ -36,5 +37,14 @@ export const getTransactionsSummarySchema = z.object({
   year: z.string({ message: 'O ano é obrigatório' }),
 });
 
+export const deleteTransactionSchema = z.object({
+  id: z.string().refine(isValidObjectId, {
+    message: 'ID inválido',
+  }),
+});
+
 export type GetTransactionQuery = z.infer<typeof getTransactionsSchema>;
-export type GetTransactionSummaryQuery = z.infer<typeof getTransactionsSummarySchema>;
+export type GetTransactionSummaryQuery = z.infer<
+  typeof getTransactionsSummarySchema
+>;
+export type DeleteTransactionParams = z.infer<typeof deleteTransactionSchema>;
