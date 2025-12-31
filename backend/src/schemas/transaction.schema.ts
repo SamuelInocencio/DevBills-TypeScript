@@ -1,7 +1,7 @@
 import { TransactionType } from '@prisma/client';
 import { ObjectId } from 'mongodb';
 import { z } from 'zod';
-import { id } from 'zod/v4/locales';
+
 
 const isValidObjectId = (id: string): boolean => ObjectId.isValid(id);
 
@@ -29,7 +29,7 @@ export const getTransactionsSchema = z.object({
     .optional(),
   categoryId: z.string().refine(isValidObjectId, {
     message: 'Categoria inválida',
-  }),
+  }).optional(),
 });
 
 export const getTransactionsSummarySchema = z.object({

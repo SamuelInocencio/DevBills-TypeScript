@@ -41,7 +41,7 @@ export const getTransactions = async (
   }
 
   try {
-    const transactons = await prisma.transaction.findMany({
+    const transactions = await prisma.transaction.findMany({
       where: filters,
       orderBy: { date: 'desc' },
       include: {
@@ -55,7 +55,7 @@ export const getTransactions = async (
       },
     });
 
-    reply.send(transactons);
+    reply.send(transactions);
   } catch (err) {
     request.log.error('Erro ao trazer transações', err);
     reply.status(500).send({ error: 'Erro do servidor' });

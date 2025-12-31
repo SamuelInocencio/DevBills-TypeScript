@@ -1,3 +1,4 @@
+import cors from '@fastify/cors';
 import type { FastifyInstance } from 'fastify';
 import Fastify from 'fastify';
 import { env } from './config/env';
@@ -10,5 +11,9 @@ const app: FastifyInstance = Fastify({
 });
 
 app.register(routes, { prefix: '/api' });
+
+// app.register(cors, {
+//   origin: true,
+// });
 
 export default app;

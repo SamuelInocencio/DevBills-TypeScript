@@ -7,7 +7,8 @@ export const prismaConnect = async () => {
     await prisma.$connect();
     console.log('✅ DB conectado com sucesso');
   } catch (error) {
-    console.log('🚨 Erro ao conectar ao servidor');
+    console.error('🚨 Erro ao conectar ao DB:', error);
+    process.exit(1); // ✅ Para a aplicação
   }
 };
 
