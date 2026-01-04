@@ -2,20 +2,20 @@ import { TransactionType } from '@prisma/client';
 import { ObjectId } from 'mongodb';
 import { z } from 'zod';
 
-
 const isValidObjectId = (id: string): boolean => ObjectId.isValid(id);
 
 export const createTransactionSchema = z.object({
   description: z.string().min(1, 'Descrição obrigatória'),
   amount: z.number().positive('Valor deve ser positivo'),
   date: z.coerce.date({
-    errorMap: () => ({ message: 'Data inválida' }),
+    //Coerce = "Forçar/converter" o valor para data (aceita strings e Timestamp e converte para Date)
+    message: 'Data inválida',
   }),
   categoryId: z.string().refine(isValidObjectId, {
     message: 'Categoria inválida',
   }),
   type: z.enum([TransactionType.expense, TransactionType.income], {
-    errorMap: () => ({ message: 'Tipo de transação inválido' }),
+    message: 'Tipo de transação inválido',
   }),
 });
 
@@ -24,12 +24,15 @@ export const getTransactionsSchema = z.object({
   year: z.string().optional(),
   type: z
     .enum([TransactionType.expense, TransactionType.income], {
-      errorMap: () => ({ message: 'Data inválida' }),
+      message: 'Data inválida',
     })
     .optional(),
-  categoryId: z.string().refine(isValidObjectId, {
-    message: 'Categoria inválida',
-  }).optional(),
+  categoryId: z
+    .string()
+    .refine(isValidObjectId, {
+      message: 'Categoria inválida',
+    })
+    .optional(),
 });
 
 export const getTransactionsSummarySchema = z.object({
@@ -43,6 +46,7 @@ export const deleteTransactionSchema = z.object({
   }),
 });
 
+export type CreateTransactionBody = z.infer<typeof createTransactionSchema>;
 export type GetTransactionQuery = z.infer<typeof getTransactionsSchema>;
 export type GetTransactionSummaryQuery = z.infer<
   typeof getTransactionsSummarySchema
