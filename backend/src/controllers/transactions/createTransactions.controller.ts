@@ -22,7 +22,7 @@ const createTransaction = async (
 
   if (!result.success) {
     const errorMessageJSON = result.error.message || 'Validação inválida!';
-    console.log(errorMessageJSON);
+  
     const errorMessage = JSON.parse(errorMessageJSON);
     reply.status(400).send({ error: errorMessage[0].message });
     return;

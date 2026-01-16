@@ -31,7 +31,7 @@ export const getTransactionsSummary = async (
   const endDate = dayjs.utc(startDate).endOf('month').toDate();
 
   try {
-    const transactons = await prisma.transaction.findMany({
+    const transactions = await prisma.transaction.findMany({
       where: {
         userId,
         date: {
@@ -49,7 +49,7 @@ export const getTransactionsSummary = async (
     let totalIncomes = 0;
     const groupedExpenses = new Map<string, CategorySummary>();
 
-    for (const transaction of transactons) {
+    for (const transaction of transactions) {
       if (transaction.type === TransactionType.expense) {
         const existing = groupedExpenses.get(transaction.categoryId) ?? {
           categoryId: transaction.categoryId,

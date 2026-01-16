@@ -34,6 +34,6 @@ export const deleteTransaction = async (
     request.log.error({ message: 'Erro ao deletar transação' });
     reply
       .status(500)
-      .send({ error: 'Erro interno do servidor, fala ao deletar transação' });
+      .send({ error: 'Erro interno do servidor, falha ao deletar transação' });
   }
 };
