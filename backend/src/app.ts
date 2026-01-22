@@ -12,8 +12,8 @@ const app: FastifyInstance = Fastify({
 
 app.register(routes, { prefix: '/api' });
 
-// app.register(cors, {
-//   origin: true,
-// });
+app.register(cors, {
+  origin: true,
+});
 
 export default app;
