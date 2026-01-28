@@ -1,4 +1,5 @@
 import { CreditCard, List, TrendingUp, Wallet } from 'lucide-react';
+import Button from '../components/Button';
 
 const Home = () => {
   const features: ReadonlyArray<Feature> = [
@@ -28,7 +29,12 @@ const Home = () => {
     },
   ];
 
-  return <div></div>;
+  return (
+    <div>
+      <h2>Olá, essa é a página Home</h2>
+      <Button variant='outline' isLoading >Click over here!</Button>
+    </div>
+  );
 };
 
 export default Home;

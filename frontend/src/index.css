@@ -30,3 +30,7 @@
     /* Fontes */
     --font-sans: Inter, system-ui, sans-serif;
 }
+
+body {
+    @apply bg-gray-950 text-gray-50 min-h-screen font-sans;
+}
