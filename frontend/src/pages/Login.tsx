@@ -1,6 +1,12 @@
+import { signInWithPopup } from 'firebase/auth';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import { firebaseAuth, googleAuthProvider } from '../config/firebase';
 
 const Login = () => {
+  const handleLogin = async () => {
+    const result = await signInWithPopup(firebaseAuth, googleAuthProvider);
+    console.log(result);
+  };
   return (
     <div className="min-h-screen flex items-center justity-center bg-gray-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -14,7 +20,7 @@ const Login = () => {
         </header>
 
         <main className="mt-8 bg-white py-8 px-4 shadow-md rounded-lg sm:px-10 space-y-6">
-          <section className='mb-6'>
+          <section className="mb-6">
             <h2 className="text-lg font-medium text-gray-900">
               Faça Login para continuar
             </h2>
@@ -23,7 +29,7 @@ const Login = () => {
             </p>
           </section>
 
-          <GoogleLoginButton />
+          <GoogleLoginButton onClick={handleLogin} isLoading={false} />
 
           <footer className="mt-6">
             <p className="mt-1 text-sm text-gray-600 text-center">
