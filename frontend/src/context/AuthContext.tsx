@@ -1,4 +1,8 @@
-import { onAuthStateChanged, signInWithPopup } from 'firebase/auth';
+import {
+  signOut as firebaseSignOut,
+  onAuthStateChanged,
+  signInWithPopup,
+} from 'firebase/auth';
 import {
   createContext,
   type ReactNode,
@@ -25,18 +29,55 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
 
   useEffect(() => {
-    onAuthStateChanged(firebaseAuth, (user) => {
-      console.log(user);
-    });
+    const unsubscribe = onAuthStateChanged(
+      firebaseAuth,
+      (user) => {
+        if (user) {
+          setAuthState({
+            user: {
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName,
+              photoURL: user.photoURL,
+            },
+            error: null,
+            loading: false,
+          });
+        } else {
+          setAuthState({ user: null, error: null, loading: false });
+        }
+      },
+      (error) => {
+        console.error('Erro na autenticação');
+        setAuthState({ user: null, error: error.message, loading: false });
+      },
+    );
+    return () => unsubscribe();
   }, []);
 
   const signWithGoogle = async (): Promise<void> => {
+    setAuthState((prev) => ({ ...prev, loading: true }));
+
     try {
       await signInWithPopup(firebaseAuth, googleAuthProvider);
-    } catch (error) {}
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Erro ao tentar logar';
+      setAuthState((prev) => ({ ...prev, loading: false, error: message }));
+    }
   };
 
-  const signOut = async (): Promise<void> => {};
+  const signOut = async (): Promise<void> => {
+    setAuthState((prev) => ({ ...prev, loading: true }));
+
+    try {
+      await firebaseSignOut(firebaseAuth);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Erro ao tentar fazer logout';
+      setAuthState((prev) => ({ ...prev, loading: false, error: message }));
+    }
+  };
 
   return (
     <AuthContext.Provider value={{ authState, signWithGoogle, signOut }}>
@@ -49,7 +90,7 @@ export const useAuth = () => {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AtuhProvider');
+    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
   }
   return context;
 };
