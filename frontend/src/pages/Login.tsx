@@ -1,16 +1,28 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
-  const { signWithGoogle } = useAuth();
+  const { signWithGoogle, authState } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
       await signWithGoogle();
-    } catch (err) {}
+    } catch (err) {
+      console.error('Erro ao fazer login como Google', err);
+    }
   };
+
+  useEffect(() => {
+    if (authState.user && !authState.loading) {
+      navigate('/dashboard');
+    }
+  }, [authState.user, authState.loading, navigate]);
+
   return (
-    <div className="min-h-screen flex items-center justity-center bg-gray-200 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <header>
           <h1 className="text-center text-3xl font-extrabold text-gray-900">
@@ -38,6 +50,11 @@ const Login = () => {
               Ao fazer login, você concorda com nosso termos de uso e politica
               de privacidade.
             </p>
+            {authState.error && (
+              <div className="bg-red-50 text-center text-red-700 mt-4">
+                <p>{authState.error} Erro no sistema</p>
+              </div>
+            )}
           </footer>
         </main>
       </div>
