@@ -19,6 +19,8 @@
     "db": "^6.0.3",
     "dotenv": "^17.2.3",
     "fastify": "^5.6.2",
+    "firebase": "^12.8.0",
+    "firebase-admin": "^13.6.0",
     "mongo": "^0.1.0",
     "mongodb": "^7.0.0",
     "zod": "^4.1.13",
