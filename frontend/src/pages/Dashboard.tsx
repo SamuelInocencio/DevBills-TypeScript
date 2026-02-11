@@ -1,3 +1,4 @@
+import { AArrowUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Card from '../components/Card';
 import MonthYearSelect from '../components/MonthYearSelect';
@@ -36,7 +37,17 @@ const Dashboard = () => {
           onYearChange={setYear}
         />
       </div>
-      <Card glowEffect hover>Samuel</Card>
+      <Card
+        glowEffect
+        hover
+        title=""
+        subtitle=""
+        icon={<AArrowUp />}
+      >
+        <div>
+          <p className="font-bold text-primary-500">R$2000</p>
+        </div>
+      </Card>
     </div>
   );
 };

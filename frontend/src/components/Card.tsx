@@ -27,6 +27,22 @@ const Card = ({
     ${className} 
     `}
     >
+      {title ||
+        (icon && (
+          <div className="flex items-center space-x-3 mb-4">
+            {icon && (
+              <div className="p-2 bg-primary-500/10 rounded-xl flex items-center justify-center">
+                {icon}
+              </div>
+            )}
+          </div>
+        ))}
+      {(title || subtitle) && (
+        <div className="">
+          {title && <h3 className="text-lg font-medium">{title}</h3>}
+          {subtitle && <p className="text-sm text-gray-400">{subtitle}</p>}
+        </div>
+      )}
       {children}
     </div>
   );
