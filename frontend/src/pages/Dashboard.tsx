@@ -1,19 +1,29 @@
 import { useEffect, useState } from 'react';
+import Card from '../components/Card';
 import MonthYearSelect from '../components/MonthYearSelect';
-import { api } from '../services/api';
+import { getTransactionsSummary } from '../services/transactionService';
+import type { TransactionSummary } from '../types/transactions';
+
+const initialSummary: TransactionSummary = {
+  totalExpenses: 0,
+  totalIncomes: 0,
+  balance: 0,
+  expensesByCategory: [],
+};
 
 const Dashboard = () => {
   const currentDate = new Date();
   const [year, setYear] = useState<number>(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth() + 1);
+  const [summary, setSummary] = useState<TransactionSummary>(initialSummary);
 
   useEffect(() => {
-    async function getTransactions() {
-      const response = await api.get('/transactions');
-      console.log(response);
+    async function loadTransactionsSummary() {
+      const response = await getTransactionsSummary(month, year);
+      setSummary(response);
     }
-    getTransactions();
-  }, []);
+    loadTransactionsSummary();
+  }, [month, year]);
 
   return (
     <div className="container-app py-6">
@@ -26,6 +36,7 @@ const Dashboard = () => {
           onYearChange={setYear}
         />
       </div>
+      <Card glowEffect hover>Samuel</Card>
     </div>
   );
 };
