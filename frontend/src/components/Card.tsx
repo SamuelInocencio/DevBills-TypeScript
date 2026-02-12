@@ -22,24 +22,22 @@ const Card = ({
   return (
     <div
       className={`bg-gray-900 rounded-xl border border-gray-700 shadow-md p-6 transition-all cursor-pointer
-    ${hover ? 'hover:border-primary-500 hover:shoadow-lg hover:-translate-y-0.5' : ''}
+    ${hover ? 'hover:border-primary-500 hover:shadow-lg hover:-translate-y-0.5' : ''}
     ${glowEffect ? 'glow' : ''}
     ${className} 
     `}
     >
-      {(title || icon) && (
-        <div className="flex items-center space-x-3 mb-4">
-          {icon && (
-            <div className="p-2 bg-primary-500/10 rounded-xl flex items-center justify-center">
-              {icon}
-            </div>
-          )}
-        </div>
-      )}
-      {(title || subtitle) && (
-        <div className="">
-          {title && <h3 className="text-lg font-medium">{title}</h3>}
-          {subtitle && <p className="text-sm text-gray-400">{subtitle}</p>}
+      {(title || icon || subtitle) && (
+        <div className="mb-4">
+          <div className="flex items-center space-x-3">
+            {icon && (
+              <div className="p-2 bg-primary-500/10 rounded-xl flex items-center justify-center">
+                {icon}
+              </div>
+            )}
+            {title && <h3 className="text-lg font-medium">{title}</h3>}
+          </div>
+          {subtitle && <p className="text-sm text-gray-400 mt-2">{subtitle}</p>}
         </div>
       )}
       {children}
