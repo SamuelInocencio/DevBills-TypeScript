@@ -1,9 +1,10 @@
-import { AArrowUp } from 'lucide-react';
+import { ArrowUp, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Card from '../components/Card';
 import MonthYearSelect from '../components/MonthYearSelect';
 import { getTransactionsSummary } from '../services/transactionService';
 import type { TransactionSummary } from '../types/transactions';
+import { formatCurrency } from '../utils/formatters';
 
 const initialSummary: TransactionSummary = {
   totalExpenses: 0,
@@ -37,17 +38,42 @@ const Dashboard = () => {
           onYearChange={setYear}
         />
       </div>
-      <Card
-        glowEffect
-        hover
-        title=""
-        subtitle=""
-        icon={<AArrowUp />}
-      >
-        <div>
-          <p className="font-bold text-primary-500">R$2000</p>
-        </div>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card
+          icon={<Wallet size={20} className="text-primary-500" />}
+          title="Saldo"
+          hover
+          glowEffect={summary.balance > 0}
+        >
+          <p
+            className={`text-2xl font-semibold mt-2
+        ${summary.balance > 0 ? 'text-primary-500' : 'text-red-300'}
+        `}
+          >
+            {formatCurrency(summary.balance)}
+          </p>
+        </Card>
+
+        <Card
+          icon={<ArrowUp size={20} className="text-primary-500" />}
+          title="Receitas"
+          hover
+        >
+          <p className="text-2xl font-semibold mt-2 text-primary-500">
+            {formatCurrency(summary.totalIncomes)}
+          </p>
+        </Card>
+
+        <Card
+          icon={<Wallet size={20} className="text-red-600" />}
+          title="Despesas"
+          hover
+        >
+          <p className="text-2xl font-semibold mt-2 text-red-700">
+            {formatCurrency(summary.totalExpenses)}
+          </p>
+        </Card>
+      </div>
     </div>
   );
 };
