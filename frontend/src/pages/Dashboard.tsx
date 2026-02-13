@@ -1,6 +1,6 @@
 import { ArrowUp, TrendingUp, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Pie, PieChart, ResponsiveContainer, Sector, Tooltip } from 'recharts';
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import Card from '../components/Card';
 import MonthYearSelect from '../components/MonthYearSelect';
 import { getTransactionsSummary } from '../services/transactionService';
@@ -19,24 +19,9 @@ interface ChartLabelProps {
   percent: number;
 }
 
-interface CustomSliceProps {
-  cx: number;
-  cy: number;
-  innerRadius: number;
-  outerRadius: number;
-  startAngle: number;
-  endAngle: number;
-  fill: string;
-  payload: {
-    categoryColor: string;
-    categoryName: string;
-    amount: number;
+  const formatToolTipValue = (value: number | string | undefined): string => {
+    return formatCurrency(typeof value === 'number' ? value : 0);
   };
-}
-
-const formatToolTipValue = (value: number | string | undefined): string => {
-  return formatCurrency(typeof value === 'number' ? value : 0);
-};
 
 const Dashboard = () => {
   const currentDate = new Date();
@@ -57,24 +42,6 @@ const Dashboard = () => {
     percent,
   }: ChartLabelProps): string => {
     return `${categoryName}: ${(percent * 100).toFixed(1)}%`;
-  };
-
-  // Função customizada para renderizar cada fatia com sua cor
-  const renderCustomSlice = (props: CustomSliceProps) => {
-    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, payload } =
-      props;
-
-    return (
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={payload.categoryColor}
-      />
-    );
   };
 
   return (
@@ -144,8 +111,11 @@ const Dashboard = () => {
                     dataKey="amount"
                     nameKey="categoryName"
                     label={renderPieChartLabel}
-                    shape={renderCustomSlice}
-                  />
+                  >
+                    {summary.expensesByCategory.map((entry) => (
+                      <Cell key={entry.categoryId} fill={entry.categoryColor} />
+                    ))}
+                  </Pie>
                   <Tooltip formatter={formatToolTipValue} />
                 </PieChart>
               </ResponsiveContainer>
