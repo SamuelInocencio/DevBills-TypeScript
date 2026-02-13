@@ -1,6 +1,6 @@
 import { ArrowUp, TrendingUp, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
+import { Pie, PieChart, ResponsiveContainer, Sector, Tooltip } from 'recharts';
 import Card from '../components/Card';
 import MonthYearSelect from '../components/MonthYearSelect';
 import { getTransactionsSummary } from '../services/transactionService';
@@ -12,6 +12,30 @@ const initialSummary: TransactionSummary = {
   totalIncomes: 0,
   balance: 0,
   expensesByCategory: [],
+};
+
+interface ChartLabelProps {
+  categoryName: string;
+  percent: number;
+}
+
+interface CustomSliceProps {
+  cx: number;
+  cy: number;
+  innerRadius: number;
+  outerRadius: number;
+  startAngle: number;
+  endAngle: number;
+  fill: string;
+  payload: {
+    categoryColor: string;
+    categoryName: string;
+    amount: number;
+  };
+}
+
+const formatToolTipValue = (value: number | string | undefined): string => {
+  return formatCurrency(typeof value === 'number' ? value : 0);
 };
 
 const Dashboard = () => {
@@ -27,6 +51,31 @@ const Dashboard = () => {
     }
     loadTransactionsSummary();
   }, [month, year]);
+
+  const renderPieChartLabel = ({
+    categoryName,
+    percent,
+  }: ChartLabelProps): string => {
+    return `${categoryName}: ${(percent * 100).toFixed(1)}%`;
+  };
+
+  // Função customizada para renderizar cada fatia com sua cor
+  const renderCustomSlice = (props: CustomSliceProps) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, payload } =
+      props;
+
+    return (
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={payload.categoryColor}
+      />
+    );
+  };
 
   return (
     <div className="container-app py-6">
@@ -81,26 +130,31 @@ const Dashboard = () => {
           icon={<TrendingUp size={20} className="text-primary-500" />}
           title="Despesas por Categoria"
           className="min-h-80"
+          hover
         >
-          {summary.expensesByCategory.length > 0 }
-          <div>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={summary.expensesByCategory}
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  dataKey="amount"
-                  nameKey="categoryName"
-                >
-                  {summary.expensesByCategory.map((entry) => (
-                    <Cell key={entry.categoryId} fill={entry.categoryColor} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          {summary.expensesByCategory.length > 0 ? (
+            <div className="h-72 mt-4">
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={summary.expensesByCategory}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    dataKey="amount"
+                    nameKey="categoryName"
+                    label={renderPieChartLabel}
+                    shape={renderCustomSlice}
+                  />
+                  <Tooltip formatter={formatToolTipValue} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-64 text-gray-500">
+              Nenhuma despesa registrada no período.
+            </div>
+          )}
         </Card>
       </div>
     </div>
