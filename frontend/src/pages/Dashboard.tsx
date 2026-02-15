@@ -1,10 +1,25 @@
-import { ArrowUp, TrendingUp, Wallet } from 'lucide-react';
+import { ArrowUp, Calendar, TrendingUp, Wallet } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import Card from '../components/Card';
 import MonthYearSelect from '../components/MonthYearSelect';
-import { getTransactionsSummary } from '../services/transactionService';
-import type { TransactionSummary } from '../types/transactions';
+import {
+  getTransactionsMontly,
+  getTransactionsSummary,
+} from '../services/transactionService';
+import type { MonthlyItem, TransactionSummary } from '../types/transactions';
 import { formatCurrency } from '../utils/formatters';
 
 const initialSummary: TransactionSummary = {
@@ -19,15 +34,16 @@ interface ChartLabelProps {
   percent: number;
 }
 
-  const formatToolTipValue = (value: number | string | undefined): string => {
-    return formatCurrency(typeof value === 'number' ? value : 0);
-  };
+const formatToolTipValue = (value: number | string | undefined): string => {
+  return formatCurrency(typeof value === 'number' ? value : 0);
+};
 
 const Dashboard = () => {
   const currentDate = new Date();
   const [year, setYear] = useState<number>(currentDate.getFullYear());
   const [month, setMonth] = useState(currentDate.getMonth() + 1);
   const [summary, setSummary] = useState<TransactionSummary>(initialSummary);
+  const [monthlyItemsData, setmonthlyItemsData] = useState<MonthlyItem[]>([]);
 
   useEffect(() => {
     async function loadTransactionsSummary() {
@@ -35,6 +51,15 @@ const Dashboard = () => {
       setSummary(response);
     }
     loadTransactionsSummary();
+  }, [month, year]);
+
+  useEffect(() => {
+    async function loadTransactionsMonthly() {
+      const response = await getTransactionsMontly(month, year, 4);
+      console.log(response);
+      setmonthlyItemsData(response.history);
+    }
+    loadTransactionsMonthly();
   }, [month, year]);
 
   const renderPieChartLabel = ({
@@ -125,6 +150,49 @@ const Dashboard = () => {
               Nenhuma despesa registrada no período.
             </div>
           )}
+        </Card>
+        <Card
+          icon={<Calendar size={20} className="text-primary-500" />}
+          title="Histórico Mensal"
+          className="min-h-80 p-2.5"
+        >
+          <div className="h-72 mt-4">
+            {monthlyItemsData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyItemsData} margin={{ left: 40 }}>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="rgba(255,255,255,0.1)"
+                  />
+                  <XAxis
+                    dataKey="name"
+                    stroke="#94a3b8"
+                    tick={{ style: { textTransform: 'capitalize' } }}
+                  />
+                  <YAxis
+                    stroke="#94a3b8"
+                    tickFormatter={formatCurrency}
+                    tick={{ style: { fontSize: 14 } }}
+                  />
+                  <Tooltip
+                    formatter={formatCurrency}
+                    contentStyle={{
+                      backgroundColor: '#1a1a1a',
+                      borderColor: '#2a2a2a',
+                    }}
+                    labelStyle={{ color: '#f8f8f8' }}
+                  />
+                  <Legend />
+                  <Bar dataKey="expenses" name="Despesas" fill="#ff6384" />
+                  <Bar dataKey="income" name="Receitas" fill="#37e359" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-64 text-gray-500">
+                Nenhuma despesa registrada no período.
+              </div>
+            )}
+          </div>
         </Card>
       </div>
     </div>
