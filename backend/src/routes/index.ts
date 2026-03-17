@@ -3,12 +3,12 @@ import categoryRoutes from './category.routes';
 import transactionRoutes from './transaction.routes';
 
 async function routes(fastify: FastifyInstance): Promise<void> {
-  fastify.get('/health', async () => {
-    return {
-      status: 'OK',
-      message: 'Servidor DevBills rodando normalmente, Samuel',
-    };
-  });
+  // fastify.get('/health', async () => {
+  //   return {
+  //     status: 'OK',
+  //     message: 'Servidor DevBills rodando normalmente, Samuel',
+  //   };
+  // });
 
   fastify.register(categoryRoutes, { prefix: '/categories' });
   fastify.register(transactionRoutes, { prefix: '/transactions' });
