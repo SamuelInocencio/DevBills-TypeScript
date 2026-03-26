@@ -1,6 +1,7 @@
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
+import Input from '../components/Input';
 import MonthYearSelect from '../components/MonthYearSelect';
 
 const Transactions = () => {
@@ -25,6 +26,14 @@ const Transactions = () => {
           year={year}
           onMonthChange={setMonth}
           onYearChange={setYear}
+        />
+      </div>
+      <div className="mb-6">
+        <Input
+          id
+          placeholder="Buscar transações..."
+          icon={<Search className="w-4 h-4" />}
+          fullWidth
         />
       </div>
     </div>
