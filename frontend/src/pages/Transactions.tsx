@@ -34,6 +34,7 @@ const Transactions = () => {
           placeholder="Buscar transações..."
           icon={<Search className="w-4 h-4" />}
           fullWidth
+          rror="Erro de pesquisa"
         />
       </div>
     </div>
