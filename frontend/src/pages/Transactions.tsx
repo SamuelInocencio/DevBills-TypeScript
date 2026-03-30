@@ -127,15 +127,18 @@ const Transactions = () => {
               <tbody divide-y divide-gray-700>
                 {transactions.map((transaction) => (
                   <tr key={transaction.id} className="hover:bg-gray-800">
-                    <td>
-                      <div>
-                        <div>
+                    <td className='px-6 py-4 text-sm text-gray-400 whitespace-nowrap'>
+                      <div className='flex items-center'>
+                        <div className='mr-2'>
                           {transaction.type === TransactionType.INCOME ? (
                             <ArrowUp className="w-4 h-4 text-primary-500" />
                           ) : (
                             <ArrowDown className="w-4 h-4 text-red-500" />
                           )}
                         </div>
+                        <span className='text-sm font-medium text-gray-50'>
+                          {transaction.description}
+                        </span>
                       </div>
                     </td>
                   </tr>
