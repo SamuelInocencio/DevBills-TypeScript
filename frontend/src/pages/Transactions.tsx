@@ -1,4 +1,4 @@
-import { AlertCircle, Plus, Search } from 'lucide-react';
+import { AlertCircle, ArrowDown, ArrowUp, Plus, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import Button from '../components/Button';
@@ -6,7 +6,7 @@ import Card from '../components/Card';
 import Input from '../components/Input';
 import MonthYearSelect from '../components/MonthYearSelect';
 import { getTransactions } from '../services/transactionService';
-import type { Transaction } from '../types/transactions';
+import { type Transaction, TransactionType } from '../types/transactions';
 
 const Transactions = () => {
   const currentDate = new Date();
@@ -16,22 +16,22 @@ const Transactions = () => {
   const [error, setError] = useState<string>('');
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  // useEffect(() => {
-  //   const fetchTransactions = async (): Promise<void> => {
-  //     try {
-  //       setLoading(true);
-  //       setError('');
-  //       const data = await getTransactions({ month, year });
-  //       setTransactions(data);
-  //     } catch (err) {
-  //       setError('Não foi possível carregar as transações, tente novamente.');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchTransactions = async (): Promise<void> => {
+      try {
+        setLoading(true);
+        setError('');
+        const data = await getTransactions({ month, year });
+        setTransactions(data);
+      } catch (err) {
+        setError('Não foi possível carregar as transações, tente novamente.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  //   fetchTransactions();
-  // }, [month, year]);
+    fetchTransactions();
+  }, [month, year]);
 
   return (
     <div className="container-app py-6">
@@ -88,7 +88,61 @@ const Transactions = () => {
             </Link>
           </div>
         ) : (
-          <div>Olá</div>
+          <div className="overflow-x-auto">
+            <table className="divide-y divide-gray-700 min-h-full">
+              <thead>
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
+                    Descrição
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
+                    Data
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
+                    Categoria
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
+                    Valor
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase"
+                  >
+                    {' '}
+                  </th>
+                </tr>
+              </thead>
+              <tbody divide-y divide-gray-700>
+                {transactions.map((transaction) => (
+                  <tr key={transaction.id} className="hover:bg-gray-800">
+                    <td>
+                      <div>
+                        <div>
+                          {transaction.type === TransactionType.INCOME ? (
+                            <ArrowUp className="w-4 h-4 text-primary-500" />
+                          ) : (
+                            <ArrowDown className="w-4 h-4 text-red-500" />
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </Card>
     </div>
