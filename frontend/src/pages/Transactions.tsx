@@ -25,26 +25,24 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [deletingId, setDeletingId] = useState<string>('');
 
-  useEffect(() => {
-    const fetchTransactions = async (): Promise<void> => {
-      try {
-        setLoading(true);
-        setError('');
-        const data = await getTransactions({ month, year });
-        setTransactions(data);
-      } catch (err) {
-        setError('Não foi possível carregar as transações, tente novamente.');
-      } finally {
-        setLoading(false);
-      }
-    };    
-
-    useEffect(() => {
-      fetchTransactions();
-    });
-  }, [month, year]);
+  const fetchTransactions = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      setError('');
+      const data = await getTransactions({ month, year });
+      setTransactions(data);
+    } catch (err) {
+      setError('Não foi possível carregar as transações, tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = (id: string): void => {};
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [month, year]);
 
   return (
     <div className="container-app py-6">
