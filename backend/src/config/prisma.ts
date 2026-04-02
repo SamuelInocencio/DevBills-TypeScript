@@ -6,7 +6,7 @@ export const prismaConnect = async () => {
   try {
     console.log('🔍 Testando conexão MongoDB...');
     await prisma.$connect().then(() => console.log('✅ MongoDB conectado!'));
-  } catch (error) {
+  } catch (err) {
     console.error('❌ Erro ao conectar:', err);
     process.exit(1); // ✅ Para a aplicação
   }
