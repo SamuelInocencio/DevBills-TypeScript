@@ -6,7 +6,7 @@ import {
   Search,
   Trash2,
 } from 'lucide-react';
-import { useEffect, useEffectEvent, useState } from 'react';
+import { type ChangeEvent, useEffect, useEffectEvent, useState } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'react-toastify';
 import Button from '../components/Button';
@@ -27,7 +27,11 @@ const Transactions = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<
+    Transaction[]
+  >([]);
   const [deletingId, setDeletingId] = useState<string>('');
+  const [searchText, setSearchText] = useState<string>('');
 
   const fetchTransactions = async (): Promise<void> => {
     try {
@@ -35,6 +39,7 @@ const Transactions = () => {
       setError('');
       const data = await getTransactions({ month, year });
       setTransactions(data);
+      setFilteredTransactions(data);
     } catch (err) {
       setError('Não foi possível carregar as transações, tente novamente.');
     } finally {
@@ -46,7 +51,7 @@ const Transactions = () => {
     try {
       setDeletingId(id);
       await deleteTransactions(id);
-      toast.success("Transação deletada com sucesso!");
+      toast.success('Transação deletada com sucesso!');
       setTransactions((prev) => prev.filter((t) => t.id !== id));
     } catch (err) {
       console.error(err);
@@ -65,6 +70,17 @@ const Transactions = () => {
   useEffect(() => {
     fetchTransactions();
   }, [month, year]);
+
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    setSearchText(event.target.value);
+    setFilteredTransactions(
+      transactions.filter((transaction) =>
+        transaction.description
+          .toUpperCase()
+          .includes(event.target.value.toUpperCase()),
+      ),
+    );
+  };
 
   return (
     <div className="container-app py-6">
@@ -92,7 +108,8 @@ const Transactions = () => {
           placeholder="Buscar transações..."
           icon={<Search className="w-4 h-4" />}
           fullWidth
-          rror="Erro de pesquisa"
+          onChange={handleSearchChange}
+          value={searchText}
         />
       </Card>
 
@@ -158,7 +175,7 @@ const Transactions = () => {
                 </tr>
               </thead>
               <tbody divide-y divide-gray-700>
-                {transactions.map((transaction) => (
+                {filteredTransactions.map((transaction) => (
                   <tr key={transaction.id} className="hover:bg-gray-800">
                     <td className="px-3 py-4  text-gray-400 whitespace-nowrap">
                       <div className="flex items-center">
