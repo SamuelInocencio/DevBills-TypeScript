@@ -12,6 +12,7 @@ export const getTransactions = async (
   const response = await api.get<Transaction[]>('/transactions', {
     params: filter,
   });
+  console.log(response.data);
   return response.data;
 };
 
