@@ -41,6 +41,7 @@ const TransactionForm = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const formId = useId();
   const navigate = useNavigate();
 
@@ -81,6 +82,7 @@ const TransactionForm = () => {
 
   const handleSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
+    setLoading(true);
     setError(null);
 
     try {
@@ -88,19 +90,24 @@ const TransactionForm = () => {
         return;
       }
 
+      const [day, month, year] = formData.date.split('/');
+
       const transactionData: CreateTransactionDTO = {
         description: formData.description,
         amount: Number(formData.amount),
         categoryId: formData.categoryId,
         type: formData.type,
-        date: new Date(formData.date).toISOString(),
+        date: new Date(`${year}-${month}-${day}T12:00:00`).toISOString(),
       };
 
       await createTransaction(transactionData);
+
       toast.success('Transação adicionada com sucesso!');
       navigate('/transacoes');
     } catch (err) {
       toast.error('Falha ao adicionar transação.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -178,10 +185,16 @@ const TransactionForm = () => {
               ]}
             />
             <div className="flex justify-end space-x-3 mt-2">
-              <Button variant="outline" onClick={handleCancel} type="button">
+              <Button
+                variant="outline"
+                onClick={handleCancel}
+                type="button"
+                disabled={loading}
+              >
                 Cancelar
               </Button>
               <Button
+                disabled={loading}
                 type="submit"
                 variant={
                   formData.type === TransactionType.EXPENSE
@@ -189,7 +202,13 @@ const TransactionForm = () => {
                     : 'success'
                 }
               >
-                <Save className="w-4 h-4 mr-2" />
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="w-4 h-4 border-4 border-gray-700 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : (
+                  <Save className="w-4 h-4 mr-2" />
+                )}
                 Salvar
               </Button>
             </div>
