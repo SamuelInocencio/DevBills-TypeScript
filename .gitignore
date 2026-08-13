@@ -97,3 +97,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code
+# Ignora o diretório (allowlist pessoal e arquivos .tmp de escrita atômica),
+# mas mantém versionável um settings.json de projeto, se um dia existir.
+.claude/*
+!.claude/settings.json
