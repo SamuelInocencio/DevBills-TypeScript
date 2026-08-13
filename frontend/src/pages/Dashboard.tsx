@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import type { PieLabelRenderProps } from 'recharts/types/polar/Pie';
 import Card from '../components/Card';
 import MonthYearSelect from '../components/MonthYearSelect';
 import {
@@ -28,11 +29,6 @@ const initialSummary: TransactionSummary = {
   balance: 0,
   expensesByCategory: [],
 };
-
-interface ChartLabelProps {
-  categoryName: string;
-  percent: number;
-}
 
 const formatToolTipValue = (value: number | string | undefined): string => {
   return formatCurrency(typeof value === 'number' ? value : 0);
@@ -62,11 +58,12 @@ const Dashboard = () => {
     loadTransactionsMonthly();
   }, [month, year]);
 
+  // `name` vem do nameKey="categoryName" e `percent` é a fatia (0..1).
   const renderPieChartLabel = ({
-    categoryName,
+    name,
     percent,
-  }: ChartLabelProps): string => {
-    return `${categoryName}: ${(percent * 100).toFixed(1)}%`;
+  }: PieLabelRenderProps): string => {
+    return `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`;
   };
 
   return (
@@ -175,7 +172,7 @@ const Dashboard = () => {
                     tick={{ style: { fontSize: 14 } }}
                   />
                   <Tooltip
-                    formatter={formatCurrency}
+                    formatter={formatToolTipValue}
                     contentStyle={{
                       backgroundColor: '#1a1a1a',
                       borderColor: '#2a2a2a',

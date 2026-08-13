@@ -33,7 +33,7 @@ Thumbs.db
 uploads
 
 #Docker
-Dockerfile
+# (Dockerfile versionado: faz parte do deploy)
 
 
 # Logs
@@ -65,7 +65,7 @@ dist-ssr
 .env 
 
 #Deploy
-Dockerfile
+# (Dockerfile versionado: faz parte do deploy)
 
 node_modules
 # Keep environment variables out of version control

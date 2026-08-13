@@ -1,45 +1,45 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "windows", "debian-openssl-3.0.x"]
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
-    provider = "mongodb"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Category {
-    id        String          @id @default(auto()) @map("_id") @db.ObjectId
-    name      String
-    color     String
-    type      TransactionType
-    createdAt DateTime        @default(now())
-    updatedAt DateTime        @updatedAt
+  id        String          @id @default(cuid())
+  name      String
+  color     String
+  type      TransactionType
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 
-    transactions Transaction[]
+  transactions Transaction[]
 
-    @@unique([name, type])
+  @@unique([name, type])
 }
 
 enum TransactionType {
-    expense
-    income
+  expense
+  income
 }
 
 model Transaction {
-    id          String          @id @default(auto()) @map("_id") @db.ObjectId
-    description String
-    amount      Float
-    date        DateTime
-    type        TransactionType
-    userId      String
-    createdAt   DateTime        @default(now())
-    updatedAt   DateTime        @updatedAt
+  id          String          @id @default(cuid())
+  description String
+  amount      Float
+  date        DateTime
+  type        TransactionType
+  userId      String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
-    // Relacionamento
-    categoryId String   @db.ObjectId
-    category   Category @relation(fields: [categoryId], references: [id])
+  // Relacionamento
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
 
-    @@index([userId, date])
-    @@index([userId, date, categoryId])
+  @@index([userId, date])
+  @@index([userId, date, categoryId])
 }

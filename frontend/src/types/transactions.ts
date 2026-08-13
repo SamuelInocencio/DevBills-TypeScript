@@ -1,9 +1,12 @@
 import type { Category, CategorySummary } from './category';
 
-export enum TransactionType {
-  EXPENSE = 'expense',
-  INCOME = 'income',
-}
+export const TransactionType = {
+  EXPENSE: 'expense',
+  INCOME: 'income',
+} as const;
+
+export type TransactionType =
+  (typeof TransactionType)[keyof typeof TransactionType];
 
 export interface Transaction {
   id: string;

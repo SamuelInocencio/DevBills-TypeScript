@@ -12,7 +12,7 @@ export const getCategories = async (
     });
     reply.send(categories);
   } catch (err) {
-    request.log.error('Erro ao buscar categorias', err);
+    request.log.error({ err }, 'Erro ao buscar categorias');
     reply.status(500).send({ error: 'Erro ao buscar categorias' });
   }
 };

@@ -1,0 +1,20 @@
+# SITE_ADDRESS controla o modo:
+#   :80                  -> HTTP puro (uso local)
+#   devbills.com.br      -> HTTPS automático via Let's Encrypt (VPS)
+{$SITE_ADDRESS::80} {
+	encode gzip
+
+	# API vai para o backend. O prefixo /api é mantido porque o Fastify
+	# registra as rotas com `prefix: '/api'`.
+	handle /api/* {
+		reverse_proxy backend:3001
+	}
+
+	# Todo o resto é o SPA. O try_files devolve index.html nas rotas do
+	# react-router, senão um F5 em /transactions daria 404.
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

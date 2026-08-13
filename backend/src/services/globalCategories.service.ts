@@ -25,25 +25,21 @@ export const initializeGlobalCategories = async (): Promise<Category[]> => {
   const createdCategories: Category[] = [];
 
   for (const category of globalCategories) {
-    try {
-      const existing = await prisma.category.findFirst({
-        where: {
-          name: category.name,
-          type: category.type,
-        },
-      });
-      if (!existing) {
-        const newCategory = await prisma.category.create({
-          data: category,
-        });
-        console.log(`✅ Criada: ${newCategory.name}`);
-        createdCategories.push(newCategory);
-      } else {
-        createdCategories.push(existing);
-      }
-    } catch (err) {
-      console.error('🚨 Erro ao criar categorias');
+    const existing = await prisma.category.findFirst({
+      where: {
+        name: category.name,
+        type: category.type,
+      },
+    });
+
+    if (existing) {
+      createdCategories.push(existing);
+      continue;
     }
+
+    const newCategory = await prisma.category.create({ data: category });
+    console.log(`✅ Criada: ${newCategory.name}`);
+    createdCategories.push(newCategory);
   }
   console.log('✅ Todas as categorias Inicializadas.');
 

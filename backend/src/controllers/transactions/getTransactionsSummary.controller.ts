@@ -84,7 +84,7 @@ export const getTransactionsSummary = async (
 
     reply.send(summary);
   } catch (err) {
-    request.log.error('Erro ao trazer transações', err);
+    request.log.error({ err }, 'Erro ao trazer transações');
     reply.status(500).send({ error: 'Erro do servidor' });
   }
 };

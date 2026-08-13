@@ -16,7 +16,9 @@ const initializeFirebaseAdmin = (): void => {
       credential: admin.credential.cert({
         projectId: FIREBASE_PROJECT_ID,
         clientEmail: FIREBASE_CLIENT_EMAIL,
-        privateKey: FIREBASE_PRIVATE_KEY,
+        // A chave chega com \n literais (tanto do .env quanto das env vars do
+        // Docker) e o certificado só é aceito com quebras de linha reais.
+        privateKey: FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
       }),
     });
   } catch (err) {

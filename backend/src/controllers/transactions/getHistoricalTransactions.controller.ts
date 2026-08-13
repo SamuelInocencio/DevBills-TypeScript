@@ -69,5 +69,8 @@ export const getHistoricalTrasactions = async (
       }
     });
     reply.send({ history: monthlyData });
-  } catch (err) {}
+  } catch (err) {
+    request.log.error({ err }, 'Erro ao trazer o histórico de transações');
+    reply.status(500).send({ error: 'Erro do servidor' });
+  }
 };

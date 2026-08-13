@@ -14,11 +14,13 @@ const startServer = async () => {
 
     await initializeGlobalCategories();
 
-    await app.listen({ port: PORT }).then(() => {
-      console.log(`Server is running on port ${PORT}`);
-    });
+    // host 0.0.0.0: o padrão do Fastify é 127.0.0.1, que dentro de um
+    // container só aceita conexões do próprio container.
+    await app.listen({ port: PORT, host: '0.0.0.0' });
+    console.log(`Server is running on port ${PORT}`);
   } catch (err) {
-    console.error(err);
+    console.error('❌ Falha ao iniciar o servidor:', err);
+    process.exit(1);
   }
 };
 

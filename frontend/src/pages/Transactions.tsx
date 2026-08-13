@@ -6,7 +6,7 @@ import {
   Search,
   Trash2,
 } from 'lucide-react';
-import { type ChangeEvent, useEffect, useEffectEvent, useState } from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { toast } from 'react-toastify';
 import Button from '../components/Button';
@@ -104,7 +104,6 @@ const Transactions = () => {
       </Card>
       <Card className="mb-6">
         <Input
-          id
           placeholder="Buscar transações..."
           icon={<Search className="w-4 h-4" />}
           fullWidth

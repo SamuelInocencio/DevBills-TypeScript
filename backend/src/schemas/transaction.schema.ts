@@ -1,8 +1,8 @@
 import { TransactionType } from '@prisma/client';
-import { ObjectId } from 'mongodb';
 import { z } from 'zod';
 
-const isValidObjectId = (id: string): boolean => ObjectId.isValid(id);
+// Os ids passaram a ser cuid() com a migração para PostgreSQL.
+const isValidId = (id: string): boolean => /^c[a-z0-9]{24}$/.test(id);
 
 export const createTransactionSchema = z.object({
   description: z.string().min(1, 'Descrição obrigatória'),
@@ -11,7 +11,7 @@ export const createTransactionSchema = z.object({
     //Coerce = "Forçar/converter" o valor para data (aceita strings e Timestamp e converte para Date)
     message: 'Data inválida',
   }),
-  categoryId: z.string().refine(isValidObjectId, {
+  categoryId: z.string().refine(isValidId, {
     message: 'Categoria inválida',
   }),
   type: z.enum([TransactionType.expense, TransactionType.income], {
@@ -29,7 +29,7 @@ export const getTransactionsSchema = z.object({
     .optional(),
   categoryId: z
     .string()
-    .refine(isValidObjectId, {
+    .refine(isValidId, {
       message: 'Categoria inválida',
     })
     .optional(),
@@ -43,11 +43,11 @@ export const getTransactionsSummarySchema = z.object({
 export const getHistoricalTransactionsSchema = z.object({
   month: z.coerce.number().min(1).max(12),
   year: z.coerce.number().min(2000).max(2100),
-  months: z.coerce.number().min(1).max(12).optional,
+  months: z.coerce.number().min(1).max(12).optional(),
 });
 
 export const deleteTransactionSchema = z.object({
-  id: z.string().refine(isValidObjectId, {
+  id: z.string().refine(isValidId, {
     message: 'ID inválido',
   }),
 });

@@ -1,9 +1,10 @@
 import { CreditCard, List, TrendingUp, Wallet } from 'lucide-react';
+import type { ReactElement } from 'react';
 import { useNavigate } from 'react-router';
 import Button from '../components/Button';
 
 interface Feature {
-  icon: JSX.Element;
+  icon: ReactElement;
   title: string;
   description: string;
 }
