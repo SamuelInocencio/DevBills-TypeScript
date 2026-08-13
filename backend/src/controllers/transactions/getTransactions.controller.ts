@@ -56,7 +56,14 @@ export const getTransactions = async (
       },
     });
 
-    reply.send(transactions);
+    // amount é Decimal e serializaria como string em JSON; o contrato da API
+    // é number, então converte antes de responder.
+    reply.send(
+      transactions.map((transaction) => ({
+        ...transaction,
+        amount: transaction.amount.toNumber(),
+      })),
+    );
   } catch (err) {
     request.log.error({ err }, 'Erro ao trazer transações');
     reply.status(500).send({ error: 'Erro do servidor' });

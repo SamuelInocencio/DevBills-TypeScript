@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import dayjs from 'dayjs';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import prisma from '../../config/prisma';
@@ -46,13 +47,14 @@ export const getHistoricalTrasactions = async (
       },
     });
 
+    // Acumula em Decimal e converte para number só na resposta.
     const monthlyData = Array.from({ length: months }, (_, i) => {
       const date = dayjs.utc(baseDate).subtract(months - 1 - i, 'month');
 
       return {
         name: date.format('MMM/YYYY'),
-        income: 0,
-        expenses: 0,
+        income: new Prisma.Decimal(0),
+        expenses: new Prisma.Decimal(0),
       };
     });
 
@@ -62,13 +64,20 @@ export const getHistoricalTrasactions = async (
 
       if (monthData) {
         if (transaction.type === 'income') {
-          monthData.income += transaction.amount;
+          monthData.income = monthData.income.add(transaction.amount);
         } else {
-          monthData.expenses += transaction.amount;
+          monthData.expenses = monthData.expenses.add(transaction.amount);
         }
       }
     });
-    reply.send({ history: monthlyData });
+
+    reply.send({
+      history: monthlyData.map((month) => ({
+        name: month.name,
+        income: month.income.toNumber(),
+        expenses: month.expenses.toNumber(),
+      })),
+    });
   } catch (err) {
     request.log.error({ err }, 'Erro ao trazer o histórico de transações');
     reply.status(500).send({ error: 'Erro do servidor' });

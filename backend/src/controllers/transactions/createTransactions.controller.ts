@@ -57,7 +57,10 @@ const createTransaction = async (
       },
     });
 
-    reply.status(201).send(newTransaction);
+    reply.status(201).send({
+      ...newTransaction,
+      amount: newTransaction.amount.toNumber(),
+    });
   } catch (err) {
     request.log.error({ err }, 'Erro ao criar transação');
     reply.status(500).send({ error: 'Erro interno do servidor' });
