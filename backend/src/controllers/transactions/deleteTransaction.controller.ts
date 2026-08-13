@@ -22,8 +22,11 @@ export const deleteTransaction = async (
       },
     });
 
+    // 404 cobre os três casos: id inexistente, id de outro usuário e id
+    // malformado. Responder igual nos três é proposital — distinguir revelaria
+    // quais ids existem. O findFirst acima já filtra por userId.
     if (!transaction) {
-      reply.status(400).send({ error: 'ID da transação inválido' });
+      reply.status(404).send({ error: 'Transação não encontrada' });
       return;
     }
 
