@@ -29,6 +29,20 @@ services:
       postgres:
         condition: service_healthy
     # Sem `ports`: o backend só é alcançável pela rede interna, via Caddy.
+    healthcheck:
+      # Usa o próprio node (a imagem slim não traz curl nem wget).
+      # start_period cobre as migrations, que rodam antes do listen.
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3001/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   web:
     build:
@@ -52,7 +66,10 @@ services:
       - caddy-data:/data
       - caddy-config:/config
     depends_on:
-      - backend
+      # service_healthy, não apenas started: evita 502 enquanto as migrations
+      # rodam e a API ainda não está escutando.
+      backend:
+        condition: service_healthy
 
 volumes:
   postgres-data:
