@@ -52,6 +52,9 @@ const Transactions = () => {
       setDeletingId(id);
       await deleteTransactions(id);
       toast.success('Transação deletada com sucesso!');
+      // Precisa sair das duas listas: handleSearchChange refiltra a partir de
+      // `transactions`, então remover só da filtrada faz o item voltar na busca.
+      setTransactions((prev) => prev.filter((t) => t.id !== id));
       setFilteredTransactions((prev) => prev.filter((t) => t.id !== id));
     } catch (err) {
       console.error(err);

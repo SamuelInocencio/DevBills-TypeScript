@@ -31,7 +31,7 @@ export const deleteTransaction = async (
 
     reply.status(200).send({ message: 'Transação deletada com sucesso!' });
   } catch (err) {
-    request.log.error({ message: 'Erro ao deletar transação' });
+    request.log.error({ err }, 'Erro ao deletar transação');
     reply
       .status(500)
       .send({ error: 'Erro interno do servidor, falha ao deletar transação' });

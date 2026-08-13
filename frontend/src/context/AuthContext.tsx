@@ -22,17 +22,19 @@ interface AuthContextProps {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  // loading começa true: o onAuthStateChanged é assíncrono e, até ele
+  // responder, ainda não se sabe se há sessão. Iniciar em false faz as rotas
+  // privadas tratarem "ainda não sei" como "não logado".
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     error: null,
-    loading: false,
+    loading: true,
   });
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
       firebaseAuth,
       (user) => {
-        console.log(user);
         if (user) {
           setAuthState({
             user: {
