@@ -1,0 +1,28 @@
+# Override de produção (VPS). Uso:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Só as diferenças em relação ao ambiente local:
+#
+#   - o Caddy deixa de publicar 80/443. Na VPS quem é dono dessas portas é o
+#     Traefik do EasyPanel, que termina o TLS e já roteia devburguer e
+#     portfolio. O Caddy continua servindo o SPA e fazendo o proxy de /api,
+#     mas só em HTTP, dentro da rede.
+#
+#   - o serviço web entra também na rede overlay `easypanel`, criada pelo
+#     EasyPanel e marcada como attachable. É por ela que o Traefik alcança
+#     este container, pelo alias devbills-web.
+#
+# postgres e backend ficam fora dessa rede de propósito: continuam só na rede
+# interna do compose, sem alcance a partir do Traefik.
+services:
+  web:
+    ports: !reset []
+    networks:
+      default: {}
+      easypanel:
+        aliases:
+          - devbills-web
+
+networks:
+  easypanel:
+    external: true
