@@ -31,8 +31,10 @@ RUN yarn build
 
 # ---------- runtime ----------
 # O Caddy serve o bundle estático e faz o proxy de /api para o backend,
-# então frontend e proxy são o mesmo serviço. O Caddyfile entra por bind
-# mount no compose, para trocar o domínio sem rebuildar a imagem.
+# então frontend e proxy são o mesmo serviço. O Caddyfile vai dentro da imagem
+# porque em produção (EasyPanel) não existe bind mount; no compose local o
+# mount sobrescreve este arquivo, mantendo o domínio editável sem rebuild.
 FROM caddy:2-alpine AS runtime
 
+COPY Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /app/dist /srv

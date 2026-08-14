@@ -6,8 +6,12 @@
 
 	# API vai para o backend. O prefixo /api é mantido porque o Fastify
 	# registra as rotas com `prefix: '/api'`.
+	#
+	# O upstream é parametrizado porque o nome do serviço muda conforme o
+	# orquestrador: no compose local é `backend`, mas no Swarm do EasyPanel
+	# os serviços são prefixados com o projeto (`devbills_backend`).
 	handle /api/* {
-		reverse_proxy backend:3001
+		reverse_proxy {$BACKEND_UPSTREAM:backend:3001}
 	}
 
 	# Todo o resto é o SPA. O try_files devolve index.html nas rotas do
